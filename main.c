@@ -1,141 +1,243 @@
-// ensiksi ainakin vain yksi piste
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/timing/timing.h>
 
-int tila = 0; // 0 = idle, 1 = red, 2 = yellow, 3 = green
+static const struct gpio_dt_spec red =
+	GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);
 
-// Led pin configurations
-static const struct gpio_dt_spec red = GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);
-static const struct gpio_dt_spec green = GPIO_DT_SPEC_GET(DT_ALIAS(led1), gpios);
-static const struct gpio_dt_spec yellow = GPIO_DT_SPEC_GET(DT_ALIAS(led2), gpios);
+static const struct gpio_dt_spec green =
+	GPIO_DT_SPEC_GET(DT_ALIAS(led1), gpios);
 
-// Red led thread initialization
 #define STACKSIZE 500
 #define PRIORITY 5
-void red_led_task(void *, void *, void*);
-void green_led_task(void *, void *, void*);
-void yellow_led_task(void *, void *, void*);
-K_THREAD_DEFINE(red_thread,STACKSIZE,red_led_task,NULL,NULL,NULL,PRIORITY,0,0);
-K_THREAD_DEFINE(green_thread,STACKSIZE,green_led_task,NULL,NULL,NULL,PRIORITY,0,0);
-K_THREAD_DEFINE(yellow_thread,STACKSIZE,yellow_led_task,NULL,NULL,NULL,PRIORITY,0,0);
 
-// Main program
-int main(void)
+// #define DEBUG
+
+
+void red_led_task(void *, void *, void *);
+
+K_THREAD_DEFINE(
+	red_thread,
+	STACKSIZE,
+	red_led_task,
+	NULL,
+	NULL,
+	NULL,
+	PRIORITY,
+	0,
+	0
+);
+
+
+void init_leds(void)
 {
-	init_led();
+	int ret;
 
-	tila = 1; // set red led on
-
-	return 0;
-}
-
-// Initialize leds
-int  init_led() {
-
-	// Led pin initialization
-	int ret = gpio_pin_configure_dt(&red, GPIO_OUTPUT_ACTIVE);
+	/* Punainen LED */
+	ret = gpio_pin_configure_dt(&red, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
-		printk("Error: Led configure failed\n");		
-		return ret;
+		printk("Red LED initialization failed\n");
+		return;
 	}
-	// set led off
-	gpio_pin_set_dt(&red,0);
 
-		// Led pin initialization
+	/* Vihreä LED */
 	ret = gpio_pin_configure_dt(&green, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
-		printk("Error: Led configure failed\n");		
-		return ret;
+		printk("Green LED initialization failed\n");
+		return;
 	}
-	// set led off
-	gpio_pin_set_dt(&green,0);
 
-	// Led pin initialization
-	ret = gpio_pin_configure_dt(&yellow, GPIO_OUTPUT_ACTIVE);
-	if (ret < 0) {
-		printk("Error: Led configure failed\n");		
-		return ret;
+	gpio_pin_set_dt(&red, 0);
+	gpio_pin_set_dt(&green, 0);
+
+#ifdef DEBUG
+	printk("LEDs initialized ok\n");
+#endif
+}
+
+static uint64_t measure_red(void)
+{
+	timing_t start_time;
+	timing_t end_time;
+
+	timing_start();
+
+	start_time = timing_counter_get();
+
+	gpio_pin_set_dt(&red, 1);
+	gpio_pin_set_dt(&green, 0);
+
+#ifdef DEBUG
+	printk("Red on\n");
+#endif
+
+	k_sleep(K_SECONDS(1));
+
+	/* Punainen pois */
+	gpio_pin_set_dt(&red, 0);
+
+#ifdef DEBUG
+	printk("Red off\n");
+#endif
+
+	k_sleep(K_SECONDS(1));
+
+	end_time = timing_counter_get();
+
+	timing_stop();
+
+	return timing_cycles_to_ns(
+		timing_cycles_get(&start_time, &end_time)
+	) / 1000;
+}
+
+
+static uint64_t measure_yellow(void)
+{
+	timing_t start_time;
+	timing_t end_time;
+
+	timing_start();
+
+	start_time = timing_counter_get();
+
+	gpio_pin_set_dt(&red, 1);
+	gpio_pin_set_dt(&green, 1);
+
+#ifdef DEBUG
+	printk("Yellow on (red + green)\n");
+#endif
+
+	k_sleep(K_SECONDS(1));
+
+	gpio_pin_set_dt(&red, 0);
+	gpio_pin_set_dt(&green, 0);
+
+#ifdef DEBUG
+	printk("Yellow off\n");
+#endif
+
+	k_sleep(K_SECONDS(1));
+
+	end_time = timing_counter_get();
+
+	timing_stop();
+
+	return timing_cycles_to_ns(
+		timing_cycles_get(&start_time, &end_time)
+	) / 1000;
+}
+
+static uint64_t measure_green(void)
+{
+	timing_t start_time;
+	timing_t end_time;
+
+	timing_start();
+
+	start_time = timing_counter_get();
+
+	gpio_pin_set_dt(&red, 0);
+	gpio_pin_set_dt(&green, 1);
+
+#ifdef DEBUG
+	printk("Green on\n");
+#endif
+
+	k_sleep(K_SECONDS(1));
+
+	gpio_pin_set_dt(&green, 0);
+
+#ifdef DEBUG
+	printk("Green off\n");
+#endif
+
+	k_sleep(K_SECONDS(1));
+
+	end_time = timing_counter_get();
+
+	timing_stop();
+
+	return timing_cycles_to_ns(
+		timing_cycles_get(&start_time, &end_time)
+	) / 1000;
+}
+
+
+int main(void)
+{
+
+	timing_init();
+	timing_start();
+
+	init_leds();
+
+	k_msleep(100);
+
+#ifdef DEBUG
+	printk("Program started..\n");
+#endif
+
+	while (true) {
+		k_msleep(100);
 	}
-	// set led off
-	gpio_pin_set_dt(&yellow,0);
 
-	// set led off
-	gpio_pin_set_dt(&red,0);
-
-
-	printk("Led initialized ok\n");
-	
 	return 0;
 }
 
-// Task to handle red led
-void red_led_task(void *, void *, void*) {
-	
-	printk("Red led thread started\n");
+
+void red_led_task(void *, void *, void*)
+{
+#ifdef DEBUG
+	printk("RYG thread started\n");
+#endif
+
 	while (true) {
-		if (tila == 1) {
-					// 1. set led on 
-		gpio_pin_set_dt(&red,1);
-		printk("Red on\n");
-		// 2. sleep for 2 seconds
-		k_sleep(K_SECONDS(1));
-		// 3. set led off
-		gpio_pin_set_dt(&red,0);
-		printk("Red off\n");
-		// 4. sleep for 2 seconds
-		k_sleep(K_SECONDS(1));
 
-		tila = 2; // set yellow led on
-		}
-		k_yield();
-	}
-}
+		uint64_t red_time;
+		uint64_t yellow_time;
+		uint64_t green_time;
+		uint64_t sequence_time;
+
+		/*
+		 * R = RED
+		 */
+		red_time = measure_red();
+
+		printk("Red task: %llu us\n", red_time);
 
 
-// Task to handle yellow led
-void yellow_led_task(void *, void *, void*) {
-	
-	printk("Yellow led thread started\n");
-	while (true) {
-		if (tila == 2) {
-			// 1. set led on 
-			gpio_pin_set_dt(&red, 1);
-			gpio_pin_set_dt(&green, 1);
-			printk("Yellow on\n");
-			
-			k_sleep(K_SECONDS(1));
-			gpio_pin_set_dt(&red, 0);
-			gpio_pin_set_dt(&green, 0);
-			printk("Yellow off\n");
+		/*
+		 * Y = YELLOW
+		 *
+		 * Yellow = RED + GREEN
+		 */
+		yellow_time = measure_yellow();
 
-			k_sleep(K_SECONDS(1));
+		printk("Yellow task: %llu us\n", yellow_time);
 
-			tila = 3;
-		}
-		k_yield();
-	}
-}
-// Task to handle green led
-void green_led_task(void *, void *, void*) {
-	
-	printk("Green led thread started\n");
-	while (true) {
-		if (tila == 3) {
-			// 1. set led on 
-			gpio_pin_set_dt(&green,1);
-			printk("Green on\n");
-			// 2. sleep for 2 seconds
-			k_sleep(K_SECONDS(1));
-			// 3. set led off
-		gpio_pin_set_dt(&green,0);
-		printk("Green off\n");
-		// 4. sleep for 2 seconds
-		k_sleep(K_SECONDS(1));
 
-		tila = 1; // set red led on
-		}
-		k_yield();
+		/*
+		 * G = GREEN
+		 */
+		green_time = measure_green();
+
+		printk("Green task: %llu us\n", green_time);
+
+
+		/*
+		 * Koko RYG-sekvenssin aika
+		 */
+		sequence_time =
+			red_time +
+			yellow_time +
+			green_time;
+
+		printk("RYG sequence total: %llu us\n",
+		       sequence_time);
+
+		printk("\n");
 	}
 }
