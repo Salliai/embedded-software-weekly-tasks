@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.5 (Python 3.11.9 on win32)" generated="2026-10-08T23:13:06.206820" rpa="false" schemaversion="5">
+<suite id="s1" name="Serial Str" source="C:\Users\seppo\Desktop\Sulautettu\6_viikkoteht\piste_1\serial_str.robot">
+<test id="s1-t1" name="Connect Serial" line="27">
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Connecting to ${board}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-10-08T23:13:06.350564" elapsed="0.000000"/>
+</kw>
+<kw name="Add Port" owner="SerialLibrary">
+<arg>${com}</arg>
+<arg>baudrate=${baud}</arg>
+<arg>encoding=ascii</arg>
+<doc>Adds new port with specified locator.</doc>
+<status status="PASS" start="2026-10-08T23:13:06.350564" elapsed="0.000000"/>
+</kw>
+<kw name="Port Should Be Open" owner="SerialLibrary">
+<arg>${com}</arg>
+<doc>Fails if specified port is closed.</doc>
+<status status="PASS" start="2026-10-08T23:13:06.350564" elapsed="0.000000"/>
+</kw>
+<kw name="Reset Input Buffer" owner="SerialLibrary">
+<doc>Clears input buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:06.350564" elapsed="0.000000"/>
+</kw>
+<kw name="Reset Output Buffer" owner="SerialLibrary">
+<doc>Clears outout buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:06.350564" elapsed="0.000000"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:06.334463" elapsed="0.016101"/>
+</test>
+<test id="s1-t2" name="Serial Timer Success" line="34">
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:07.351274" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:06.350564" elapsed="1.000710"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:07.351274" level="INFO">${junk} = </msg>
+<var>${junk}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:07.351274" elapsed="0.000000"/>
+</kw>
+<kw name="Write Data" owner="SerialLibrary">
+<arg>${seq_success}\r</arg>
+<arg>encoding=ascii</arg>
+<doc>Writes data into the port.</doc>
+<status status="PASS" start="2026-10-08T23:13:07.354950" elapsed="0.000000"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:08.355745" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:07.354950" elapsed="1.000795"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:08.363767" level="INFO">${raw} = 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D 0A 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D...</msg>
+<var>${raw}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:08.355745" elapsed="0.008022"/>
+</kw>
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2026-10-08T23:13:08.363767" level="INFO">${read} = UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ...</msg>
+<var>${read}</var>
+<arg>bytes.fromhex("""${raw}""").decode("ascii", errors="ignore")</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2026-10-08T23:13:08.363767" elapsed="0.000000"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${read}</arg>
+<arg>Timer for red led set for 11 seconds</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-10-08T23:13:08.363767" elapsed="0.000000"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:06.350564" elapsed="2.013203"/>
+</test>
+<test id="s1-t3" name="Serial Timer Character Error" line="50">
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:09.364315" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:08.363767" elapsed="1.000548"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:09.366180" level="INFO">${junk} = </msg>
+<var>${junk}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:09.366180" elapsed="0.000000"/>
+</kw>
+<kw name="Write Data" owner="SerialLibrary">
+<arg>${seq_timer_char_error}\r</arg>
+<arg>encoding=ascii</arg>
+<doc>Writes data into the port.</doc>
+<status status="PASS" start="2026-10-08T23:13:09.368987" elapsed="0.000000"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:10.372897" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:09.368987" elapsed="1.003910"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:10.374922" level="INFO">${raw} = 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D 0A 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D...</msg>
+<var>${raw}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:10.372897" elapsed="0.002025"/>
+</kw>
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2026-10-08T23:13:10.378254" level="INFO">${read} = UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ...</msg>
+<var>${read}</var>
+<arg>bytes.fromhex("""${raw}""").decode("ascii", errors="ignore")</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2026-10-08T23:13:10.378254" elapsed="0.000000"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${read}</arg>
+<arg>${time_value_error}</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-10-08T23:13:10.382607" elapsed="0.001398"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:08.363767" elapsed="2.020238"/>
+</test>
+<test id="s1-t4" name="Serial Timer Negative Error" line="64">
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:11.391918" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:10.391026" elapsed="1.000892"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:11.393941" level="INFO">${junk} = </msg>
+<var>${junk}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:11.391918" elapsed="0.002023"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Sending '${seq_negative_error}'</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-10-08T23:13:11.395966" elapsed="0.002034"/>
+</kw>
+<kw name="Write Data" owner="SerialLibrary">
+<arg>${seq_negative_error}\r</arg>
+<arg>encoding=ascii</arg>
+<doc>Writes data into the port.</doc>
+<status status="PASS" start="2026-10-08T23:13:11.400036" elapsed="0.000000"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:12.405791" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:11.400036" elapsed="1.005755"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:12.407821" level="INFO">${raw} = 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D 0A 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D...</msg>
+<var>${raw}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:12.405791" elapsed="0.004057"/>
+</kw>
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2026-10-08T23:13:12.414948" level="INFO">${read} = UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ...</msg>
+<var>${read}</var>
+<arg>bytes.fromhex("""${raw}""").decode("ascii", errors="ignore")</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2026-10-08T23:13:12.410877" elapsed="0.004071"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${read}</arg>
+<arg>${time_value_error}</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-10-08T23:13:12.416976" elapsed="0.002034"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:10.387965" elapsed="2.031045"/>
+</test>
+<test id="s1-t5" name="Serial Timer Numbers and Characters Error" line="84">
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:13.419554" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:12.419010" elapsed="1.000544"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:13.421617" level="INFO">${junk} = </msg>
+<var>${junk}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:13.421123" elapsed="0.000494"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Sending '${seq_timer_char_error2}'</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-10-08T23:13:13.421617" elapsed="0.002072"/>
+</kw>
+<kw name="Write Data" owner="SerialLibrary">
+<arg>${seq_timer_char_error2}\r</arg>
+<arg>encoding=ascii</arg>
+<doc>Writes data into the port.</doc>
+<status status="PASS" start="2026-10-08T23:13:13.423689" elapsed="0.000000"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:14.430030" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:13.429298" elapsed="1.000732"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:14.432054" level="INFO">${raw} = 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D 0A 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D...</msg>
+<var>${raw}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:14.430030" elapsed="0.002024"/>
+</kw>
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2026-10-08T23:13:14.438146" level="INFO">${read} = UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ...</msg>
+<var>${read}</var>
+<arg>bytes.fromhex("""${raw}""").decode("ascii", errors="ignore")</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2026-10-08T23:13:14.434081" elapsed="0.004065"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${read}</arg>
+<arg>${time_value_error}</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-10-08T23:13:14.438146" elapsed="0.002026"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:12.419010" elapsed="2.023197"/>
+</test>
+<test id="s1-t6" name="Serial Timer Invalid Time Error" line="104">
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:15.443228" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:14.442207" elapsed="1.001021"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:15.445259" level="INFO">${junk} = </msg>
+<var>${junk}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:15.445259" elapsed="0.000000"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Sending '${seq_invalid_time_error}'</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-10-08T23:13:15.447285" elapsed="0.002035"/>
+</kw>
+<kw name="Write Data" owner="SerialLibrary">
+<arg>${seq_invalid_time_error}\r</arg>
+<arg>encoding=ascii</arg>
+<doc>Writes data into the port.</doc>
+<status status="PASS" start="2026-10-08T23:13:15.449320" elapsed="0.002816"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:16.457406" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:15.454891" elapsed="1.003385"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:16.464367" level="INFO">${raw} = 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D 0A 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D...</msg>
+<var>${raw}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:16.459322" elapsed="0.005045"/>
+</kw>
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2026-10-08T23:13:16.469196" level="INFO">${read} = UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ...</msg>
+<var>${read}</var>
+<arg>bytes.fromhex("""${raw}""").decode("ascii", errors="ignore")</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2026-10-08T23:13:16.466073" elapsed="0.003123"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${read}</arg>
+<arg>${time_len_error}</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-10-08T23:13:16.469196" elapsed="0.002727"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:14.442207" elapsed="2.032868"/>
+</test>
+<test id="s1-t7" name="Serial GYG sequence test" line="124">
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:17.479262" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:16.478419" elapsed="1.000843"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:17.481355" level="INFO">${junk} = </msg>
+<var>${junk}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:17.479262" elapsed="0.002093"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Sending '${seq_GYG}'</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-10-08T23:13:17.481355" elapsed="0.003290"/>
+</kw>
+<kw name="Write Data" owner="SerialLibrary">
+<arg>${seq_GYG}\r</arg>
+<arg>encoding=ascii</arg>
+<doc>Writes data into the port.</doc>
+<status status="PASS" start="2026-10-08T23:13:17.487496" elapsed="0.000000"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:23.488388" level="INFO">Slept 6 seconds.</msg>
+<arg>6000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:17.487496" elapsed="6.000892"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:23.488388" level="INFO">${raw} = 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D 0A 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D...</msg>
+<var>${raw}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:23.488388" elapsed="0.000000"/>
+</kw>
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2026-10-08T23:13:23.496912" level="INFO">${read} = UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART msg: GYG
+UART processing finished in 1251 ms
+Time invalid: -2
+Dispatcher: GYG
+VALID SEQUE...</msg>
+<var>${read}</var>
+<arg>bytes.fromhex("""${raw}""").decode("ascii", errors="ignore")</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2026-10-08T23:13:23.488388" elapsed="0.008524"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${read}</arg>
+<arg>${RYGRYG_success}</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-10-08T23:13:23.499593" elapsed="0.000000"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:16.478419" elapsed="7.021174"/>
+</test>
+<test id="s1-t8" name="Serial Seq Wrong Char Error Test" line="144">
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:24.499932" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:23.499593" elapsed="1.000339"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:24.499932" level="INFO">${junk} = </msg>
+<var>${junk}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:24.499932" elapsed="0.000000"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Sending '${seq_invalid_char}'</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-10-08T23:13:24.499932" elapsed="0.000000"/>
+</kw>
+<kw name="Write Data" owner="SerialLibrary">
+<arg>${seq_invalid_char}\r</arg>
+<arg>encoding=ascii</arg>
+<doc>Writes data into the port.</doc>
+<status status="PASS" start="2026-10-08T23:13:24.499932" elapsed="0.000000"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-10-08T23:13:25.511354" level="INFO">Slept 1 second.</msg>
+<arg>1000ms</arg>
+<doc>Pauses execution for the given time.</doc>
+<status status="PASS" start="2026-10-08T23:13:24.499932" elapsed="1.011422"/>
+</kw>
+<kw name="Read All Data" owner="SerialLibrary">
+<msg time="2026-10-08T23:13:25.515462" level="INFO">${raw} = 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D 0A 55 41 52 54 20 70 72 6F 63 65 73 73 69 6E 67 20 66 69 6E 69 73 68 65 64 20 69 6E 20 30 20 6D 73 0D...</msg>
+<var>${raw}</var>
+<doc>Read all available data from the port's incoming buffer.</doc>
+<status status="PASS" start="2026-10-08T23:13:25.511354" elapsed="0.004108"/>
+</kw>
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2026-10-08T23:13:25.519523" level="INFO">${read} = UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART processing finished in 0 ms
+UART msg: RYaG
+UART processing finished in 1342 ms
+Time invali...</msg>
+<var>${read}</var>
+<arg>bytes.fromhex("""${raw}""").decode("ascii", errors="ignore")</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2026-10-08T23:13:25.515462" elapsed="0.004061"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${read}</arg>
+<arg>${seq_char_error}</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-10-08T23:13:25.521552" elapsed="0.000522"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:23.499593" elapsed="2.022481"/>
+</test>
+<test id="s1-t9" name="Disconnect Serial" line="164">
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Disconnecting ${board}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-10-08T23:13:25.522074" elapsed="0.007159"/>
+</kw>
+<kw name="Delete Port" owner="SerialLibrary" type="TEARDOWN">
+<arg>${com}</arg>
+<doc>Deletes specified port.</doc>
+<status status="PASS" start="2026-10-08T23:13:25.531951" elapsed="0.000000"/>
+</kw>
+<status status="PASS" start="2026-10-08T23:13:25.522074" elapsed="0.009877"/>
+</test>
+<status status="PASS" start="2026-10-08T23:13:06.211975" elapsed="19.329909"/>
+</suite>
+<statistics>
+<total>
+<stat pass="9" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="Serial Str" id="s1" pass="9" fail="0" skip="0">Serial Str</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
